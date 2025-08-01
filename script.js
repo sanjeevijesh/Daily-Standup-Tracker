@@ -46,6 +46,8 @@ function loadEntries() {
     `;
 
     table.appendChild(row);
+    updateSummary(entries);
+
   });
 }
 
@@ -71,3 +73,22 @@ function editEntry(index) {
 }
 
 window.onload = loadEntries;
+function updateSummary(entries) {
+  document.getElementById("total-entries").textContent = entries.length;
+
+  const names = [...new Set(entries.map(e => e.name))];
+  document.getElementById("names-submitted").textContent = names.join(', ');
+
+  const blockers = entries.filter(e => e.blockers.trim() !== "").length;
+  document.getElementById("blocker-count").textContent = blockers;
+
+  const dates = entries.map(e => new Date(e.date));
+  if (dates.length > 0) {
+    const minDate = new Date(Math.min(...dates)).toISOString().split('T')[0];
+    const maxDate = new Date(Math.max(...dates)).toISOString().split('T')[0];
+    document.getElementById("date-range").textContent = `${minDate} to ${maxDate}`;
+  } else {
+    document.getElementById("date-range").textContent = "N/A";
+  }
+}
+
